@@ -1,34 +1,27 @@
 import { EntitySchema } from "typeorm";
 
-const User = new EntitySchema({
-  name: "User",
-  tableName: "users",
+export const License = new EntitySchema({
+  name: "License",
+  tableName: "licenses",
   columns: {
     id: {
       primary: true,
       type: "uuid",
       generated: "uuid",
     },
-    email: {
-      type: "varchar",
-      unique: true,
+    userId: {
+      type: "uuid",
+      name: "user_id"
     },
-    password: {
+    type: {
       type: "varchar",
-      nullable: true,
     },
-    name: {
+    status: {
       type: "varchar",
-      nullable: true,
     },
-    googleId: {
-      type: "varchar",
-      nullable: true,
-    },
-    preferredModel: {
-      type: "varchar",
-      default: "openai",
-      name: "preferred_model",
+    purchasedAt: {
+      name: "purchased_at",
+      type: "timestamp",
     },
     createdAt: {
       name: "created_at",
@@ -41,6 +34,11 @@ const User = new EntitySchema({
       updateDate: true,
     },
   },
+  relations: {
+    user: {
+      type: "many-to-one",
+      target: "User",
+      joinColumn: { name: "user_id" }
+    }
+  }
 });
-
-export { User };

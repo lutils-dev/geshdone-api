@@ -7,20 +7,18 @@ export class UserService {
   }
 
   async createUser(userData) {
-    // Check for existing user
-    const existingUser = await this.userRepository.findByEmail(userData.email);
+    const existingUser = await this.findByEmail(userData.email);
     if (existingUser) {
       const error = new Error("User with this email already exists");
       error.status = 400;
       throw error;
     }
 
-    // Hash password and create user
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-    return this.userRepository.create({
-      ...userData,
-      password: hashedPassword,
-    });
+    if (userData.password) {
+      userData.password = await bcrypt.hash(userData.password, 10);
+    }
+
+    return this.userRepository.create(userData);
   }
 
   async getUserById(id) {
@@ -31,5 +29,21 @@ export class UserService {
       throw error;
     }
     return user;
+  }
+
+  async findByEmail(email) {
+    return this.userRepository.findByEmail(email);
+  }
+
+  async updateUser(id, updates) {
+    const user = await this.getUserById(id);
+
+    const allowedUpdates = {
+      name: updates.name,
+      preferredModel: updates.preferredModel,
+    };
+
+    Object.assign(user, allowedUpdates);
+    return this.userRepository.save(user);
   }
 }

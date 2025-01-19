@@ -11,6 +11,10 @@ export class UserRepository {
     return this.repository.save(user);
   }
 
+  async save(user) {
+    return this.repository.save(user);
+  }
+
   async findByEmail(email) {
     try {
       return await this.repository.findOne({

@@ -45,7 +45,6 @@ describe("User API", () => {
   });
 
   it("should get user by id", async () => {
-    // First create a user
     const createResponse = await request(app.callback())
       .post("/api/v1/users")
       .send({
@@ -55,7 +54,6 @@ describe("User API", () => {
 
     const userId = createResponse.body.data.id;
 
-    // Then try to get the user
     const response = await request(app.callback()).get(
       `/api/v1/users/${userId}`
     );
@@ -67,13 +65,11 @@ describe("User API", () => {
   });
 
   it("should reject duplicate email", async () => {
-    // First create a user
     await request(app.callback()).post("/api/v1/users").send({
       email: "test@example.com",
       password: "password123",
     });
 
-    // Try to create another user with the same email
     const response = await request(app.callback()).post("/api/v1/users").send({
       email: "test@example.com",
       password: "password456",
